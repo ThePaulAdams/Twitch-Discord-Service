@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Twitchat</AssemblyName>
+    <RootNamespace>TDSBot</RootNamespace>
+    <StartupObject>Bot.Program</StartupObject>
+    <ApplicationIcon>twitch.ico</ApplicationIcon>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <OutputType>Exe</OutputType>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>NU1605</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Web\**" />
+    <EmbeddedResource Remove="Web\**" />
+    <None Remove="Web\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Discord.Net.Commands" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+    <PackageReference Include="MySql.Data" Version="8.0.20" />
+    <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="TwitchLib" Version="3.1.1" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="configTemplate.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

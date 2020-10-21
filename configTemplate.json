@@ -1,0 +1,9 @@
+{
+  "Token": "discord token",
+  "dbConString": "server=;userid=;password=;database=",
+  "twitchClientId": "",
+  "twitchToken": "",
+  "twitchName": "",
+  "twitchOAuth": "",
+  "defaultTwitchChannel": ""
+}
