@@ -25,7 +25,9 @@ namespace Bot
         private List<JoinedChannel> joinedChannels = new List<JoinedChannel>();
         private JoinedChannel Channel;
         TwitchClient client;
-       
+        TwitchPubSub pubSub;
+
+
         public Discord Discord { get; set; }
         public Program Controller;
         TwitchAPI twitchApi;
@@ -65,7 +67,13 @@ namespace Bot
             client.OnNewSubscriber += Client_OnNewSubscriber;
             client.OnConnected += Client_OnConnected;
 
-        
+
+            pubSub = new TwitchPubSub();
+            pubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
+
+            // Connect
+            pubSub.Connect();
+
             client.Connect();
 
 
@@ -101,6 +109,27 @@ namespace Bot
                 Console.WriteLine($"{e.DateTime.ToString()}: {e.BotUsername} - {e.Data}");
             }
         }
+
+        private void OnPubSubServiceConnected(object sender, System.EventArgs e)
+        {
+            Console.WriteLine("PubSubServiceConnected!");
+
+
+
+            //this needs to be the twitch streamer oath token, not the bots... pubSub.SendTopics(Controller._config["twitchOAuth"]);
+            //this needs to be the twitch streamer ID pubSub.ListenToBitsEvents("");
+
+            pubSub.OnBitsReceived += OnBitsReceived;
+
+            // SendTopics accepts an oauth optionally, which is necessary for some topics, such as bit events.
+            pubSub.SendTopics("some long string here, probably oauth, cant remember");
+        }
+
+        private void OnBitsReceived(object sender, TwitchLib.PubSub.Events.OnBitsReceivedArgs e)
+        {
+            Console.WriteLine($"{e.Username} cheered {e.BitsUsed} bits");
+        }
+
 
         private void Client_OnConnected(object sender, OnConnectedArgs e)
         {
