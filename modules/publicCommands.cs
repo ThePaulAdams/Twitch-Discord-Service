@@ -52,24 +52,6 @@ namespace TDSBot.modules
 
 
 
-        [Command("twitchsay")]
-        [RequireContext(ContextType.Guild)]
-        // make sure the user is an admin on the server
-        [RequireUserPermission(GuildPermission.ViewChannel)]
-
-        public async Task twitchSay([Remainder] string message)
-        {
-            var sendChannel = message.Split(" ");
-            var index = message.IndexOf(" ");
-            string messageToSend = message.Substring(index);
-            string messagesender = Context.User.Username.ToString();
-            await Task.Run(() => ProgramService.SendTwitchMessage(sendChannel[0], "[" + messagesender + "] " + messageToSend));
-
-        }
-
-
-
-
 
 
 
@@ -89,6 +71,25 @@ namespace TDSBot.modules
             await user.Guild.AddBanAsync(user, reason: reason);
             await ReplyAsync("ok!");
         }
+
+
+
+        [Command("twitchsay")]
+        [RequireContext(ContextType.Guild)]
+        // make sure the user is an admin on the server
+        [RequireUserPermission(GuildPermission.BanMembers)]
+
+        public async Task twitchSay([Remainder] string message)
+        {
+            var sendChannel = message.Split(" ");
+            var index = message.IndexOf(" ");
+            string messageToSend = message.Substring(index);
+            string messagesender = Context.User.Username.ToString();
+            await Task.Run(() => ProgramService.SendTwitchMessage(sendChannel[0], "[" + messagesender + "] " + messageToSend));
+
+        }
+
+
 
 
 
