@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -259,6 +260,61 @@ namespace TDSBot.modules
             }
             await ReplyAsync(ListOfClips.ToString());
         }
+
+
+
+
+        [Command("vods")]
+        [RequireContext(ContextType.Guild)]
+        // make sure the user is an admin on the server
+        // this is adding a twitch channel to the integrations
+        [RequireUserPermission(GuildPermission.Administrator)]
+
+        public async Task vods([Remainder] string args)
+        {
+
+            if (args.Split(" ").Length != 2)
+            {
+                await ReplyAsync("use !vods channel count");
+                return;
+            }
+
+
+            string channel = args.Split(" ")[0];
+            string count = args.Split(" ")[1];
+            var client = new RestClient("https://api.twitch.tv/helix/users?login=" + channel);
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Client-Id", ProgramService._config["twitchClientId"]);
+            request.AddHeader("Authorization", "Bearer " + ProgramService._config["twitchOAuth"]);
+            IRestResponse response = client.Execute(request);
+
+            JObject getId = JObject.Parse(response.Content);
+            var data = getId["data"];
+            var id = data[0]["id"];
+
+
+            client = new RestClient("https://api.twitch.tv/helix/videos?user_id=" + id + "&first=" + count);
+            client.Timeout = -1;
+            request = new RestRequest(Method.GET);
+            request.AddHeader("Client-Id", ProgramService._config["twitchClientId"]);
+            request.AddHeader("Authorization", "Bearer " + ProgramService._config["twitchOAuth"]);
+            response = client.Execute(request);
+            JObject list = JObject.Parse(response.Content);
+            var testList = list["data"];
+            System.Text.StringBuilder ListOfClips = new System.Text.StringBuilder();
+            foreach (JObject VOD in testList)
+            {
+                var test = VOD;
+                string name = VOD["title"].ToString();
+                string thumbURL = VOD["thumbnail_url"].ToString();
+                string download = VOD["url"].ToString();
+                ListOfClips.Append("[" + string.Format("{0:g}", VOD["created_at"]) + "][" + name + "]: <" + download + ">\n");
+            }
+            await ReplyAsync(ListOfClips.ToString());
+        }
+
+
 
     }
 }
